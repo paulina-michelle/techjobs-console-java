@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -62,7 +63,7 @@ public class JobData {
      * with "Enterprise Holdings, Inc".
      *
      * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
+     * @param value Value of the field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
@@ -76,13 +77,40 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            String lowerAValue = aValue.toLowerCase();
+            String lowerValue = value.toLowerCase();
+
+            if (lowerAValue.contains(lowerValue)) {
                 jobs.add(row);
             }
         }
 
         return jobs;
     }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String searchTerm) {
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> jobListing: allJobs) {
+            for (Map.Entry<String, String> job : jobListing.entrySet()) {
+                String value = (job.getValue());
+                //System.out.println(job.getValue());
+
+                String lowercasedSearchTerm = searchTerm.toLowerCase();
+                String lowercasedValue = value.toLowerCase();
+
+                if(lowercasedValue.contains(lowercasedSearchTerm)) {
+                    jobs.add(jobListing);
+                }
+            }
+        }
+
+        return jobs;
+    }
+
 
     /**
      * Read in data from a CSV file and store it in a list
